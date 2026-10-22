@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: expense_sharing_api
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./expense_sharing.db
+      - DEBUG=False
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
